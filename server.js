@@ -1,5 +1,4 @@
 import express from "npm:express";
-import fs from "fs";
 
 const app = express();
 
@@ -13,16 +12,14 @@ const pixelBuffer = Buffer.from(
 app.get("/pixel", (req, res) => {
   const id = req.query.id || "unknown";
 
-  // Log entry
+  // Log entry in console (puoi vederlo su Deno Deploy dashboard)
   const entry = {
     id: id,
     ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
     userAgent: req.headers["user-agent"],
     timestamp: new Date().toISOString(),
   };
-
-  // Salva su file locale (logs.txt)
-  fs.appendFileSync("logs.txt", JSON.stringify(entry) + "\n");
+  console.log(JSON.stringify(entry));
 
   // Rispondi con pixel
   res.setHeader("Content-Type", "image/png");
@@ -30,5 +27,5 @@ app.get("/pixel", (req, res) => {
   res.send(pixelBuffer);
 });
 
-// **Export default** per Deno Deploy
+// Export default per Deno Deploy
 export default app;
